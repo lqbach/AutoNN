@@ -22,9 +22,24 @@ public class MatrixTester {
                         {4, 2, 1}
                 };
 
-        double [][] prod = Matrix.dot(matrixB, matrixC);
-        System.out.println(Arrays.deepToString(prod).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+        double [][] dot_prod = Matrix.dot(matrixB, matrixC);
+        System.out.println(Arrays.deepToString(dot_prod).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
 
+        System.out.println("length = "+ matrixA.length);
 
+        double [][] had_prod = Matrix.hadamard(matrixA, matrixC);
+        System.out.println(Arrays.deepToString(had_prod).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+
+        double [][] sca_prod = Matrix.multiply(1.5, matrixA);
+        System.out.println(Arrays.deepToString(sca_prod).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+
+        double [][] sum = Matrix.add(matrixA, matrixA);
+        System.out.println(Arrays.deepToString(sum).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+
+        double [][] difference = Matrix.subtract(matrixA, matrixA);
+        System.out.println(Arrays.deepToString(difference).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+
+        double [][] sig_mat = Matrix.sigmoid(matrixA);
+        System.out.println(Matrix.print(sig_mat));
     }
 }
