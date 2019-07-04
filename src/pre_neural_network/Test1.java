@@ -1,3 +1,7 @@
+package pre_neural_network;
+
+import pre_neural_network.NeuralNetwork;
+
 import java.util.Arrays;
 
 public class Test1 {

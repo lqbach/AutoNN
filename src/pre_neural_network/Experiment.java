@@ -1,4 +1,4 @@
-/**
+package pre_neural_network; /**
  *
  * @author Quan Bach
  * @Email: long-quan.bach@mail.mcgill.ca

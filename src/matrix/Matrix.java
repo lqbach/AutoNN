@@ -1,3 +1,5 @@
+package matrix;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.*;
@@ -140,19 +142,35 @@ public class Matrix {
     }
 
     /**
-     * Pretty print a matrix
+     * Pretty print a matrix accompanied by a newline character
      *
      * @param: X an m*n matrix
      * @return: A string with all values of matrix
      */
     public static String print(double [][] X){
 
-        String matrixString = (Arrays.deepToString(X).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+        String matrixString = (Arrays.deepToString(X).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         return matrixString;
 
     }
 
 
+    /**
+     * Fill an m*n matrix with random values within a normal distribution with mean 0 and variance 1
+     *
+     * @param: m indicating number of rows
+     * @param: n indicating number of columns
+     * @return: A string with all values of matrix
+     */
+    public static double [][] random(int m, int n){
+
+        double [][] randomMatrix = new double[m][n];
+        Random rand = new Random();
+        IntStream.range(0, m)
+                .forEach(i -> IntStream.range(0, n)
+                        .forEach(j -> randomMatrix[i][j] = rand.nextDouble() * 2 - 1));
+        return randomMatrix;
+    }
 
 
 }
