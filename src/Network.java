@@ -10,6 +10,7 @@ import matrix.Matrix;
 
 public class Network {
 
+    final private double ETA = 0.1 ; //learning rate
 
     private double [][] weightsHidden;
     private double [][] weightsOuter;
@@ -26,10 +27,31 @@ public class Network {
      */
 
     public Network(int numInputNeurons, int numHiddenNeurons, int numOutputNeurons){
-        weightsHidden = Matrix.random(numInputNeurons, numHiddenNeurons);
-        weightsOuter = Matrix.random(numHiddenNeurons, numOutputNeurons);
-        biasesHidden = Matrix.random(1, numHiddenNeurons);
-        biasesOuter = Matrix.random(1, numOutputNeurons);
+        weightsHidden = Matrix.random(numHiddenNeurons, numInputNeurons);
+        weightsOuter = Matrix.random(numOutputNeurons, numHiddenNeurons);
+        biasesHidden = Matrix.random(numHiddenNeurons, 1);
+        biasesOuter = Matrix.random(numOutputNeurons, 1);
+        //test matrices
+//        weightsHidden = new double[][]{
+//                        {-.093357, .9387},
+//                        {.412868, .40232},
+//                        {.53912, -.913665}
+//                        };
+//        weightsOuter = new double[][]{
+//                        {.973, -.1299, .756709},
+//                        {-.1525, .951796, -.5670148},
+//                        };
+//        biasesHidden = new double[][]{
+//                        {-.3407},
+//                        {-.2197},
+//                        {.9363}
+//                        };
+//
+//        biasesOuter = new double[][]{
+//                        {-.3461},
+//                        {.87125}
+//                        };
+
     }
 
     //Getter functions
@@ -47,8 +69,7 @@ public class Network {
         return Matrix.print(biasesHidden);
     }
 
-    public String getBiasesOuter() {
-        return Matrix.print(biasesOuter);    }
+    public String getBiasesOuter() { return Matrix.print(biasesOuter);    }
 
     /**
      * Feedforward function
@@ -62,5 +83,42 @@ public class Network {
         Z = Matrix.sigmoid(Matrix.add(Matrix.dot(weightsOuter, Z), biasesOuter));
         return Z;
     }
+
+    /**
+     * Backpropagation algorithm
+     * @param: X a 2D array of inputs, and Y a 2D array of the expected outputs
+     *
+     * https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
+     */
+
+    public void backprop(double [][] X, double [][] Y){
+        //feedforward
+        //Z is the expected output
+        double [][] hiddenZ, outputZ;
+        hiddenZ = Matrix.sigmoid(Matrix.add(Matrix.dot(weightsHidden, X), biasesHidden));
+        outputZ = Matrix.sigmoid(Matrix.add(Matrix.dot(weightsOuter, hiddenZ), biasesOuter));
+
+        //working with outer weights first (between hidden and output layer)
+
+        double [][] douto = Matrix.hadamard(outputZ, Matrix.subtract(1, outputZ));
+        double [][] dEtotal = Matrix.subtract(outputZ, Y);
+        double [][] sigO = Matrix.hadamard(douto, dEtotal);
+        double [][] dWouter = Matrix.dot(sigO, Matrix.transpose(hiddenZ));
+
+        weightsOuter = Matrix.subtract(weightsOuter, Matrix.multiply(ETA, dWouter));
+        biasesOuter = Matrix.subtract(biasesOuter, Matrix.multiply(ETA, sigO));
+
+        //inner weights (between input and hidden)
+
+        double [][] douth = Matrix.hadamard(hiddenZ, Matrix.subtract(1, hiddenZ));
+        double [][] dE_douto = Matrix.dot(Matrix.transpose(sigO), weightsOuter);
+        double [][] sigH = Matrix.hadamard(Matrix.transpose(dE_douto), douth);
+        double [][] dWinner = Matrix.dot(sigH, Matrix.transpose(X));
+
+        weightsHidden = Matrix.subtract(weightsHidden, Matrix.multiply(ETA, dWinner));
+        biasesHidden = Matrix.subtract(biasesHidden, Matrix.multiply(ETA, sigH));
+
+    }
+
 
 }

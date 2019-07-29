@@ -100,7 +100,7 @@ public class Matrix {
     }
 
     /**
-     * Add two matrices together
+     * Subtracts two matrices together
      *
      * @param: X an m*n matrix
      * @param: Y an m*n matrix
@@ -121,6 +121,42 @@ public class Matrix {
         );
         return result;
 
+    }
+
+    /**
+     * Creates a matrix composed of the double and subtracts accordingly
+     *
+     * @param: a some double
+     * @param: Y an m*n matrix
+     * @return: an m*n matrix calculating the difference of a with every element in Y
+     * @throws RuntimeException if rows and columns of both X and Y are not the same
+     */
+    public static double[][] subtract(double a, double [][] Y){
+
+        double[][] result = new double[Y.length][Y[0].length];
+        IntStream.range(0, Y.length).forEach( i ->
+                IntStream.range(0, Y[0].length).forEach( j->
+                        result[i][j] = a - Y[i][j]
+                )
+        );
+        return result;
+
+    }
+
+    /**
+     * Transposes a matrix
+     *
+     * @param: X an m*n matrix
+     * @return: an m*n transpose matrix of X
+     */
+    public static double[][] transpose(double [][] X){
+        double[][] result = new double[X[0].length][X.length];
+        IntStream.range(0, X.length).forEach( i ->
+                IntStream.range(0, X[0].length).forEach( j->
+                        result[j][i] = X[i][j]
+                )
+        );
+        return result;
     }
 
     /**
@@ -152,6 +188,16 @@ public class Matrix {
         String matrixString = (Arrays.deepToString(X).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         return matrixString;
 
+    }
+
+    public static double [][] getColumn(double [][] X, int a){
+        if (X[0].length < a) {
+            throw new RuntimeException("Number of columns not enough");
+        }
+        double [][] col = new double [X.length][1];
+        IntStream.range(0, X.length)
+                .forEach(i -> col[i][0] = X[i][a]);
+        return col;
     }
 
 

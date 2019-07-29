@@ -41,6 +41,10 @@ public class MatrixTester {
         double [][] difference = Matrix.subtract(matrixA, matrixA);
         System.out.println(Matrix.print(difference));
 
+        double [][] int_diff = Matrix.subtract(1, matrixA);
+        System.out.println(Matrix.print(int_diff));
+
+
         double [][] sig_mat = Matrix.sigmoid(matrixA);
         System.out.println(Matrix.print(sig_mat));
 
@@ -49,5 +53,13 @@ public class MatrixTester {
 
         double [][] ran_mat2 = Matrix.random(3, 3);
         System.out.println(Matrix.print(ran_mat2));
+
+        System.out.println(Matrix.print(matrixA));
+
+        double [][] trans = Matrix.transpose(matrixA);
+        System.out.println(Matrix.print(trans));
+
+        double [][] colOne = Matrix.getColumn(matrixC, 1);
+        System.out.println(Matrix.print(colOne));
     }
 }
