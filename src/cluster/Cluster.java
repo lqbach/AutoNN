@@ -21,6 +21,21 @@ public class Cluster {
         calculateMaxRadius();
     }
 
+    public Cluster(ArrayList<Point> points, double radius){
+        dimension = points.get(0).getDimension();
+        for(Point point : points){
+            if(point.getDimension() != dimension){
+                throw new RuntimeException("Coordinates are not in the same dimension.");
+            }
+        }
+        this.points = points;
+        this.radius = radius;
+    }
+
+    public double getRadius(){
+        return radius;
+    }
+
     public void addPoint(Point point){
         if(point.getDimension() != dimension){
             throw new RuntimeException("Coordinates are not in the same dimension.");
@@ -29,6 +44,7 @@ public class Cluster {
 
         //TODO: make calculateCentroid() O(1) time instead of O(n)
         calculateCentroid();
+        calculateMaxRadius();
     }
 
     public boolean inCluster(Point p){
@@ -36,6 +52,14 @@ public class Cluster {
             return true;
         }
         return false;
+    }
+
+    public ArrayList<Point> getPoints(){
+        return points;
+    }
+
+    public int getDimension(){
+        return dimension;
     }
 
     private void calculateCentroid(){
@@ -49,8 +73,7 @@ public class Cluster {
             centroidCoor[i] /= dimension;
         }
 
-        Point centroid = new Point(centroidCoor);
-        this.centroid = centroid;
+        this.centroid = new Point(centroidCoor);
     }
 
     private void calculateMaxRadius(){

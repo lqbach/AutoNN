@@ -1,3 +1,5 @@
+package Network;
+
 import matrix.Matrix;
 
 
@@ -18,12 +20,12 @@ public class Network {
     private double [][] biasesOuter;
 
     /**
-     * Network constructor, creates weights and biases based on number of neurons given as parameters
+     * Network.Network constructor, creates weights and biases based on number of neurons given as parameters
      *
      * @param numInputNeurons number of input neurons in our network, first layer
      * @param numHiddenNeurons number of hidden neurons in our network, second layer, hidden
      * @param numOutputNeurons number of output neurons in our network, third layer
-     * @return returns a Network object
+     * @return returns a Network.Network object
      */
 
     public Network(int numInputNeurons, int numHiddenNeurons, int numOutputNeurons){

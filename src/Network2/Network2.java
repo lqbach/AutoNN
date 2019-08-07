@@ -1,3 +1,5 @@
+package Network2;
+
 import matrix.Matrix;
 import java.util.Random;
 
@@ -10,7 +12,7 @@ import java.util.Random;
 
 public class Network2 {
 
-    final private double ETA = 0.1 ; //learning rate
+    final private double ETA = 0.25 ; //learning rate
 
     private double [][] weightsHidden;
 
@@ -18,11 +20,11 @@ public class Network2 {
 
 
     /**
-     * Network constructor, creates weights and biases based on number of neurons given as parameters
+     * Network.Network constructor, creates weights and biases based on number of neurons given as parameters
      *
      * @param numInputNeurons number of input neurons in our network, first layer
      * @param numOutputNeurons number of output neurons in our network, second layer
-     * @return returns a Network object
+     * @return returns a Network.Network object
      */
 
     public Network2(int numInputNeurons, int numOutputNeurons){
@@ -128,8 +130,36 @@ public class Network2 {
 
         backprop(X, output);
 
+    }
 
+    /**
+     * Does same thing as train new data, just preps network for new output
+     *
+     *
+     */
+    public void trainNewData(){
+        double [][] newHiddenWeights = new double [weightsHidden.length + 1][weightsHidden[0].length];
+        for(int i = 0; i < weightsHidden.length; i++){
+            for(int j = 0; j < weightsHidden[0].length; j ++){
+                newHiddenWeights[i][j] = weightsHidden[i][j];
+            }
+        }
 
+        double [][] addedWeights = Matrix.random(1, weightsHidden[0].length);
+        for(int i = 0; i < newHiddenWeights[0].length; i ++){
+            addedWeights[addedWeights.length -1][i] = addedWeights[0][i];
+        }
+
+        Random rand = new Random();
+        double [][] newHiddenBias = new double [biasesHidden.length + 1][1];
+        for(int i = 0; i < biasesHidden.length; i ++){
+            newHiddenBias[i][0] = biasesHidden[i][0];
+        }
+
+        newHiddenBias[newHiddenBias.length -1][0] = rand.nextDouble()* 2 - 1;
+
+        weightsHidden = newHiddenWeights;
+        biasesHidden = newHiddenBias;
     }
 
 

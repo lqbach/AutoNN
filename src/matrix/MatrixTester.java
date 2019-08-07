@@ -2,6 +2,8 @@ package matrix;
 
 import matrix.Matrix;
 
+import java.util.Arrays;
+
 public class MatrixTester {
     public static void main(String [] args){
         double [][] matrixA =
@@ -61,5 +63,12 @@ public class MatrixTester {
 
         double [][] colOne = Matrix.getColumn(matrixC, 1);
         System.out.println(Matrix.print(colOne));
+
+        double [][] rowOne = Matrix.getRow(matrixC, 1);
+        System.out.println(Arrays.toString(Matrix.convertTo1D(rowOne)));
+        System.out.println();
+
+        double [][] idMat = Matrix.identityMatrix(4);
+        System.out.println(Matrix.print(idMat));
     }
 }

@@ -13,9 +13,9 @@ public class Point {
         return Arrays.toString(coordinates);
     }
 
-//    public double[] getCoordinates(){
-//        return coordinates;
-//    }
+    public double[] getCoordinates(){
+        return coordinates;
+    }
 
     public double getCoordinateAt(int i ){
         if(i >= coordinates.length){

@@ -190,6 +190,48 @@ public class Matrix {
 
     }
 
+    public static double [][] convertTo2D(double [] X){
+        double [][] arr = new double[1][X.length];
+        IntStream.range(0, X.length)
+                .forEach(i -> arr[0][i] = X[i]);
+        return arr;
+    }
+
+    public static double [] convertTo1D(double [][] X){
+        if(X.length > 1){
+            throw new RuntimeException("Can only convert 2D arrays with one row");
+        }
+        double [] arr = new double[X[0].length];
+        IntStream.range(0, X[0].length)
+                .forEach(i -> arr[i] = X[0][i]);
+        return arr;
+    }
+
+    public static double [][] identityMatrix(int n){
+        double [][] arr = new double[n][n];
+        IntStream.range(0, n)
+                .forEach(i -> IntStream.range(0, n)
+                        .forEach(j -> {
+                            if(i ==j){
+                                arr[i][j] = 1;
+                            }
+                            else{
+                                arr[i][j] = 0;
+                            }
+                        }));
+        return arr;
+    }
+
+    public static double [][] getRow(double [][] X, int a){
+        if (X.length < a) {
+            throw new RuntimeException("Number of columns not enough");
+        }
+        double [][] row = new double [1][X[0].length];
+        IntStream.range(0, X[0].length)
+                .forEach(i -> row[0][i] = X[a][i]);
+        return row;
+    }
+
     public static double [][] getColumn(double [][] X, int a){
         if (X[0].length < a) {
             throw new RuntimeException("Number of columns not enough");

@@ -1,20 +1,17 @@
+package Network2;
+
 import matrix.Matrix;
 
-public class NetworkTester {
+public class Network2Tester {
     public static void main(String [] args){
-        Network nn = new Network(3, 3, 2);
+        Network2 nn = new Network2(3, 2);
 
         System.out.println("Getting biases in hidden layer: \n" + nn.getBiasesHidden());
-        System.out.println("-------------------------------------------------------");
-
-        System.out.println("Getting biases in outer layer: \n" + nn.getBiasesOuter());
         System.out.println("-------------------------------------------------------");
 
         System.out.println("Getting weights in hidden layer: \n" + nn.getWeightsHidden());
         System.out.println("-------------------------------------------------------");
 
-        System.out.println("Getting weights in outer layer: \n" + nn.getWeightsOuter());
-        System.out.println("-------------------------------------------------------");
 
         //we will train the network to recognize red and blue colors
 
@@ -23,24 +20,24 @@ public class NetworkTester {
         //used normalized RGB decimals
 
         double [][] redInput = {
-                                    {0.952, 0.207, 0.313},
-                                    {0.952, 0.207, 0.231},
-                                    {0.831, 0.090, 0.031},
-                                    {0.952, 0.227, 0.168},
-                                    {1, 0.121, 0.333},
-                                    {0.886, 0.196, 0.239},
-                                };
+                {0.952, 0.207, 0.313},
+                {0.952, 0.207, 0.231},
+                {0.831, 0.090, 0.031},
+                {0.952, 0.227, 0.168},
+                {1, 0.121, 0.333},
+                {0.886, 0.196, 0.239},
+        };
 
         double [][] redExpectedOutput ={{1}, {0}};
 
         double [][] blueInput = {
-                                    {0.196, 0.2, 0.886},
-                                    {0.011, 0.019, 0.607},
-                                    {0.149, 0.156, 0.949},
-                                    {0.223, 0.149, 0.949},
-                                    {0.305, 0.247, 0.894},
-                                    {0.247, 0.364, 0.894}
-                                };
+                {0.196, 0.2, 0.886},
+                {0.011, 0.019, 0.607},
+                {0.149, 0.156, 0.949},
+                {0.223, 0.149, 0.949},
+                {0.305, 0.247, 0.894},
+                {0.247, 0.364, 0.894}
+        };
 
         double [][] blueExpectedOutput = {{0}, {1}};
 
@@ -103,5 +100,37 @@ public class NetworkTester {
         System.out.println("Feedforward testing input5 for purple output: \n" + Matrix.print(ffoutput));
         System.out.println("-------------------------------------------------------");
 
+
+        //NEW DATA TRAINED
+        nn.trainNewData(testInput3);
+
+        System.out.println("Testing with new trained network \n\n\n\n\n");
+
+
+
+        //double [][] testInput1 = {{0.035}, {0.184}, {0.603}}; //blue
+        ffoutput = nn.feedforward(testInput1);
+        System.out.println("Feedforward testing input1 for blue output: \n" + Matrix.print(ffoutput));
+        System.out.println("-------------------------------------------------------");
+
+        //double [][] testInput2 = {{.874}, {.125}, {.176}};  //red
+        ffoutput = nn.feedforward(testInput2);
+        System.out.println("Feedforward testing input2 for red output: \n" + Matrix.print(ffoutput));
+        System.out.println("-------------------------------------------------------");
+
+        //double [][] testInput3 = {{0.890}, {0.984}, {0.074}};  //yellow
+        ffoutput = nn.feedforward(testInput3);
+        System.out.println("Feedforward testing input3 for yellow output: \n" + Matrix.print(ffoutput));
+        System.out.println("-------------------------------------------------------");
+
+        //double [][] testInput4 = {{.207}, {.952}, {.243}};  //green
+        ffoutput = nn.feedforward(testInput4);
+        System.out.println("Feedforward testing input4 for green output: \n" + Matrix.print(ffoutput));
+        System.out.println("-------------------------------------------------------");
+
+        //double [][] testInput5 = {{0.937}, {0.207}, {0.952}};  //purple
+        ffoutput = nn.feedforward(testInput5);
+        System.out.println("Feedforward testing input5 for purple output: \n" + Matrix.print(ffoutput));
+        System.out.println("-------------------------------------------------------");
     }
 }
