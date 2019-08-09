@@ -30,6 +30,15 @@ public class Cluster {
         }
         this.points = points;
         this.radius = radius;
+        calculateCentroid();
+    }
+
+    public Cluster(Point point, double radius){
+        dimension = point.getDimension();
+        this.points = new ArrayList<Point>();
+        this.points.add(point);
+        this.radius = radius;
+        calculateCentroid();
     }
 
     public double getRadius(){
@@ -52,6 +61,19 @@ public class Cluster {
             return true;
         }
         return false;
+    }
+
+    public boolean inCluster(Cluster c){
+        if(this.radius > c.centroid.calcDistance(this.centroid) || c.radius > c.centroid.calcDistance(this.centroid)){
+            return true;
+        }
+        return false;
+    }
+
+    public void combineCluster(Cluster c){
+        points.addAll(c.getPoints());
+        calculateCentroid();
+        calculateMaxRadius(c.getRadius());
     }
 
     public ArrayList<Point> getPoints(){
@@ -87,5 +109,16 @@ public class Cluster {
         radius = maxRadius;
     }
 
+
+    private void calculateMaxRadius(double radius){
+        double maxRadius = 0;
+        for(Point point : points){
+            double dist = centroid.calcDistance(point);
+            if(dist >= maxRadius){
+                maxRadius = dist;
+            }
+        }
+       this.radius = maxRadius + radius;
+    }
 
 }

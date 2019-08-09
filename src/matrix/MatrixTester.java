@@ -70,5 +70,11 @@ public class MatrixTester {
 
         double [][] idMat = Matrix.identityMatrix(4);
         System.out.println(Matrix.print(idMat));
+
+        double [][] newRowMat = Matrix.addRandomRow(matrixC);
+        System.out.println(Matrix.print(newRowMat));
+
+        double [][] newDelmat = Matrix.deleteRow(matrixC, 3);
+        System.out.println(Matrix.print(newDelmat));
     }
 }

@@ -1,4 +1,4 @@
-package Network2;
+package network2;
 
 import matrix.Matrix;
 import java.util.Random;
@@ -20,11 +20,11 @@ public class Network2 {
 
 
     /**
-     * Network.Network constructor, creates weights and biases based on number of neurons given as parameters
+     * network.network constructor, creates weights and biases based on number of neurons given as parameters
      *
      * @param numInputNeurons number of input neurons in our network, first layer
      * @param numOutputNeurons number of output neurons in our network, second layer
-     * @return returns a Network.Network object
+     * @return returns a network.network object
      */
 
     public Network2(int numInputNeurons, int numOutputNeurons){
@@ -161,6 +161,8 @@ public class Network2 {
         weightsHidden = newHiddenWeights;
         biasesHidden = newHiddenBias;
     }
+
+
 
 
 }

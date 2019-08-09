@@ -1,4 +1,4 @@
-import SelfLearning.SLNN;
+import SelfLearning.SLNN2;
 import cluster.Cluster;
 import cluster.Point;
 import matrix.Matrix;
@@ -7,46 +7,40 @@ import java.util.ArrayList;
 
 public class Experiment {
 
+    /**
+     *
+     * Experiment 1:
+     *  In this experiment, we will test a bunch of RGB inputs
+     *
+     *
+     */
     public static void main(String args []){
 
-        //Create all inputs first
-        double [] redInput = {0.952, 0.207, 0.313};
+        SLNN2 nn = new SLNN2(.1, 20);
 
-        ArrayList<Point> redPoints = new ArrayList<Point>();
-        redPoints.add(new Point(redInput));
+        double [][] inputMatrix =  {
+                //red
+                {0.952, 0.207, 0.313},
+                {0.952, 0.207, 0.231},
+                {0.831, 0.090, 0.031},
+                {0.952, 0.227, 0.168},
+                {1, 0.121, 0.333},
+                {0.886, 0.196, 0.239},
+                //blue
+                {0.196, 0.2, 0.886},
+                {0.011, 0.019, 0.607},
+                {0.149, 0.156, 0.949},
+                {0.223, 0.149, 0.949},
+                {0.305, 0.247, 0.894},
+                {0.247, 0.364, 0.894}
+        };
 
-        Cluster redCluster = new Cluster(redPoints);
+        for(int i = 0; i < inputMatrix.length; i ++){
+            //System.out.println("At row : " + i);
+            nn.learn(Matrix.convertTo1D(Matrix.getRow(inputMatrix, i)));
+        }
 
-        ArrayList<Cluster> clusters = new ArrayList<Cluster>();
-        clusters.add(redCluster);
-
-        SLNN slnn = new SLNN(clusters);
-        slnn.autoTrain();
-
-
-        //testing with feedforward inputs
-
-        double [] testRed = {0.901, 0.078, 0.078};
-        System.out.println(Matrix.print(slnn.feedforward(testRed)));
-        System.out.println("----------------");
-
-        double [] testBlue = {0.078, 0.270, 0.901};
-        System.out.println(Matrix.print(slnn.feedforward(testBlue)));
-        System.out.println("----------------");
-
-        double [] testYellow = {0.819, 0.901, 0.078};
-        System.out.println(Matrix.print(slnn.feedforward(testYellow)));
-        System.out.println("----------------");
-
-        double [] testGreen = {0.078, 0.901, 0.278};
-        System.out.println(Matrix.print(slnn.feedforward(testGreen)));
-        System.out.println("----------------");
-
-
-
-
-
-
+        System.out.println(nn.getNumberOfClusters());
 
     }
 

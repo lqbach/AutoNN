@@ -260,5 +260,39 @@ public class Matrix {
         return randomMatrix;
     }
 
+    /**
+     * Adds a row with filled in values to the matrix
+     *
+     *
+     */
+    public static double [][] addRandomRow(double [][] X){
+        double [][] newMatrix = Arrays.copyOf(X, X.length + 1);
+        Random rand = new Random();
+        double [] arr = new double[X[0].length];
+        IntStream.range(0, X[0].length)
+                .forEach(i -> arr[i] = rand.nextDouble() * 2 - 1);
+        newMatrix[newMatrix.length - 1] = arr;
+        return newMatrix;
+    }
+
+    /**
+     * Adds a row with filled in values to the matrix
+     *
+     *
+     */
+    public static double [][] deleteRow(double [][] X, int n){
+        double [][] newMatrix = new double[X.length - 1][X[0].length];
+        IntStream.range(0, X.length)
+                .forEach(i -> {
+                    if(i != n){
+                        newMatrix[i] = X[i].clone();
+                    }
+                });
+        return newMatrix;
+    }
+
+
+
+
 
 }

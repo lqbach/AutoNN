@@ -6,28 +6,34 @@ import cluster.Point;
 import matrix.Matrix;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /*
- * Self-Learning Neural-network
- * This network will be as basic as possible. The number of group clusters will be the number of
- * output neurons in the output layer, each group will correspond to its own output neuron.
- *
+ * Self-Learning Neural-network 2
+ * Focuses more on the centroid being trained
+ * Works with batches
+ * Starts off from scratch
+ * If two centroids with their radius overlap, the clusters can be combined
  *
  */
-public class SLNN {
+public class SLNN2 {
 
     private ArrayList<Cluster> groups;
     private Network2 nn;
 
+    private int batchSize;
+    private int currentBatchSize = 0;
+
+    private double influenceRadius;
+    private boolean clusteringChanged;
     private double [][] output;
+    private ArrayList<Point> batch;
 
-    public SLNN(ArrayList<Cluster> groups){
-        this.groups = groups;
-        int numInput = groups.get(0).getDimension();
-        int numOutput = groups.size();
-
-        output = Matrix.identityMatrix(groups.size());
-        nn = new Network2(numInput, numOutput);
+    public SLNN2 (double influenceRadius, int batchSize){
+        this.influenceRadius = influenceRadius;
+        this.batchSize = batchSize;
+        groups = new ArrayList<Cluster>();
+        batch = new ArrayList<Point>(batchSize);
     }
 
     //helper methods
@@ -50,7 +56,6 @@ public class SLNN {
         return avgScores/numPoints;
     }
 
-
     /** Goes through all the groups and trains each group once
      *
      */
@@ -70,6 +75,7 @@ public class SLNN {
      */
 
     public void autoTrain(){
+        nn = new Network2(groups.get(0).getDimension(), groups.size());
         int succ = 0;
         while(true){
             int id = 0;
@@ -101,24 +107,24 @@ public class SLNN {
 
     public void learn(double [] input){
         Point inputPoint = new Point(input);
-        double maxRadius = 0;
+        Cluster inputCluster = new Cluster(inputPoint, influenceRadius);
 
-        for(Cluster cluster : groups){
-            if(cluster.inCluster(inputPoint)){
-                cluster.addPoint(inputPoint);
-                return;
-            }
-            if(cluster.getRadius() > maxRadius){
-                maxRadius = cluster.getRadius();
+        Iterator itr = groups.iterator();
+        while(itr.hasNext()){
+            Cluster cluster = (Cluster)itr.next();
+            if(cluster.inCluster(inputCluster)){
+                inputCluster.combineCluster(cluster);
+                itr.remove();
             }
         }
-        //create a new cluster
-        ArrayList<Point> points = new ArrayList<Point>();
-        points.add(inputPoint);
-        Cluster cluster = new Cluster(points, maxRadius);
-        groups.add(cluster);
-        output = Matrix.identityMatrix(groups.size());
-        nn.trainNewData();
+        groups.add(inputCluster);
+
+//        currentBatchSize ++;
+//        if(currentBatchSize > batchSize){
+//            output = Matrix.identityMatrix(groups.size());
+//            autoTrain();
+//            currentBatchSize = 0;
+//        }
     }
 
     public double [][] feedforward(double [] input){
@@ -137,6 +143,7 @@ public class SLNN {
     public int getNumberOfClusters(){
         return groups.size();
     }
+
 
 
 
