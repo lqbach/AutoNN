@@ -276,18 +276,28 @@ public class Matrix {
     }
 
     /**
-     * Adds a row with filled in values to the matrix
+     * Deletes a row
      *
      *
      */
     public static double [][] deleteRow(double [][] X, int n){
         double [][] newMatrix = new double[X.length - 1][X[0].length];
-        IntStream.range(0, X.length)
-                .forEach(i -> {
-                    if(i != n){
-                        newMatrix[i] = X[i].clone();
-                    }
-                });
+        //System.out.println("new matrix's dimensions are " + (X.length -1) + "x" + X[0].length);
+        int counter = 0;
+        for( int i = 0; i <X.length; ++i)
+        {
+            if ( i == n)
+                continue;
+            int q = 0;
+            for( int j = 0; j <X[0].length; ++j)
+            {
+                newMatrix[counter][q] = X[i][j];
+                q++;
+            }
+            //System.out.println("Counter= "  + counter);
+            counter++;
+        }
+
         return newMatrix;
     }
 

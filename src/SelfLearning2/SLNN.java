@@ -5,6 +5,7 @@ import cluster2.Cluster;
 
 import matrix.Matrix;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -14,6 +15,10 @@ import java.util.Iterator;
  * Starts off from scratch
  * If two centroids with their radius overlap, the clusters can be combined
  *
+ * NOTES:
+ * whenever a cluster is added, a new row must be added
+ * whenever a cluster is removed, the corresponding row must be removed
+ *
  */
 public class SLNN {
 
@@ -22,27 +27,50 @@ public class SLNN {
     private Network nn;
     private double [][] output;
 
-    public SLNN (int numInputs, double threshhold, double influenceRadius){
-        groups = new ArrayList<Cluster>();
+    public SLNN (int numInputs, double threshold, double influenceRadius){
+        this.groups = new ArrayList<Cluster>();
         this.influenceRadius = influenceRadius;
-        this.nn = new Network(numInputs, threshhold);
+        this.nn = new Network(numInputs, threshold);
     }
 
 
     //helper functions
 
     //TODO: when combining clusters, choose the cluster with more larger density to become parent cluster
-    private void mergeClusters(Cluster input){
-        Iterator itr = groups.listIterator();
-        while(itr.hasNext()){
-            Cluster cluster = (Cluster)itr.next();
-            if(input.merge(cluster)){
-                //System.out.println("Success at " + i);
-                itr.remove();
-                itr = groups.listIterator();
+
+    /**
+     * Merges the cluster with the groups, and checks if any clusters formed will make larger clusters
+     * O(n^2) time, must be improved!
+     *
+     * @param input takes in a cluster
+     * @param n an integer telling us what cluster we need to evaluate
+     */
+    private boolean mergeCluster(Cluster input, int n){
+        Cluster candidate = groups.get(n);
+        if(candidate.merge(input)){
+            Iterator itr = groups.listIterator();
+            int counter = 0;
+            while(itr.hasNext()){
+                Cluster cluster = (Cluster)itr.next();
+                if(cluster != candidate && input.merge(cluster)){
+                    //remove the cluster and delete its corresponding row from the matrix
+                    itr.remove();
+                    nn.deleteOutput(counter);
+                    //reset counter and iterator to check with the new cluster
+                    itr = groups.listIterator();
+                    counter = 0;
+                }
+                else{
+                    counter ++;
+                }
+
             }
+
+            //TODO: train the candidate here after combining
+
+            return true;
         }
-        groups.add(input);
+        return false;
     }
 
     private void learnCluster(Cluster cluster, int id){
@@ -60,6 +88,17 @@ public class SLNN {
         return avgScores;
     }
 
+    private void train(int n){
+        output = Matrix.identityMatrix(groups.size());
+        for(int i = 0; i < n; i ++) {
+            int id = 0;
+            for(Cluster cluster : groups){
+                learnCluster(cluster, id);
+                id ++;
+            }
+        }
+    }
+
     private void autoTrain(){
         output = Matrix.identityMatrix(groups.size());
         int succ = 0;
@@ -67,7 +106,9 @@ public class SLNN {
             int id = 0;
             for(Cluster cluster : groups){
                 learnCluster(cluster, id);
-                if(calculateAverageScore(cluster, id) > .95){
+                double score = calculateAverageScore(cluster, id);
+                //System.out.println(score);
+                if(score > .95){
                     succ ++;
                 }
                 else{
@@ -92,17 +133,25 @@ public class SLNN {
      * @param input a double array containing input to learn
       */
     public void learn(double [] input){
-
-        Cluster cluster = new Cluster(input, influenceRadius);
+        Cluster clusterInput = new Cluster(input, influenceRadius);
 
         int [] scores = nn.getOutputNeuronScores(Matrix.transpose(Matrix.convertTo2D(input)));
-        if(scores != null){
-            for(int i : scores){
-                Cluster candidate = groups.get(i);
-                candidate.merge(cluster);
+        if(scores!=null){
+            System.out.println("Score: " + Arrays.toString(scores));
+            int shift = 0;
+            for(int score : scores){
+                if(mergeCluster(clusterInput,score-shift)){
+                    shift ++;
+                    return;
+                }
             }
         }
+        groups.add(clusterInput);
         nn.trainNewData();
+        //output = Matrix.identityMatrix(groups.size());
+        //autoTrain();
+
+        train(1000);
     }
 
     public double [][] feedForward(double [] input){
@@ -123,6 +172,15 @@ public class SLNN {
 
     public int getNumberOfClusters(){
         return groups.size();
+    }
+
+    public String getClusters(){
+        String message = "";
+        for(Cluster cluster : groups){
+            message += cluster.toString();
+            message += "\n";
+        }
+        return message;
     }
 
 

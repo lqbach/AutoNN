@@ -103,6 +103,7 @@ public class Cluster {
         }
 
         double distance = this.calculateDistance(cluster);
+
         if(cluster.radius > distance || this.radius > distance){
             //TODO: delete this test code
             points.addAll(cluster.points);

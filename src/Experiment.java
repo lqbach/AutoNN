@@ -1,6 +1,5 @@
-import SelfLearning.SLNN2;
-import cluster.Cluster;
-import cluster.Point;
+import SelfLearning2.SLNN;
+
 import matrix.Matrix;
 
 import java.util.ArrayList;
@@ -16,31 +15,42 @@ public class Experiment {
      */
     public static void main(String args []){
 
-        SLNN2 nn = new SLNN2(.1, 20);
+        SLNN nn = new SLNN(3, .50, .2);
 
         double [][] inputMatrix =  {
-                //red
-                {0.952, 0.207, 0.313},
-                {0.952, 0.207, 0.231},
-                {0.831, 0.090, 0.031},
-                {0.952, 0.227, 0.168},
-                {1, 0.121, 0.333},
-                {0.886, 0.196, 0.239},
-                //blue
-                {0.196, 0.2, 0.886},
-                {0.011, 0.019, 0.607},
-                {0.149, 0.156, 0.949},
-                {0.223, 0.149, 0.949},
-                {0.305, 0.247, 0.894},
-                {0.247, 0.364, 0.894}
+                {0.305, 0.247, 0.894},      //blue
+                {0.952, 0.207, 0.313},      //red
+                {0.952, 0.227, 0.168},      //red
+                {0.223, 0.149, 0.949},      //blue
+                {1, 0.121, 0.333},          //red
+                {0.886, 0.196, 0.239},      //red
+                {0.949, 0.937, 0.227},      //yellow
+                {0.792, 0.043, 0.854},      //purple
+                {0.196, 0.2, 0.886},        //blue
+                {0.650, 0.035, 0.701},      //purple
+                {0.952, 0.207, 0.231},      //red
+                {0.835, 0.043, 0.854},      //purple
+                {1, 0.988, 0.341},          //yellow
+                {0.764, 0.035, 0.827},      //purple
+                {0.149, 0.156, 0.949},      //blue
+                {0.772, 0.066, 0.831},      //purple
+                {0.247, 0.364, 0.894},      //blue
+                {0.945, 1, 0.341}           //yellow
         };
 
         for(int i = 0; i < inputMatrix.length; i ++){
             //System.out.println("At row : " + i);
+            System.out.println("Testing: " + Matrix.print(Matrix.getRow(inputMatrix, i)));
             nn.learn(Matrix.convertTo1D(Matrix.getRow(inputMatrix, i)));
+
+            //System.out.println(nn.printWeights());
+            System.out.println("Network currently has " + nn.getNumberOfClusters() + " clusters");
+            System.out.println("-----------");
         }
 
-        System.out.println(nn.getNumberOfClusters());
+        System.out.println("Number of clusters: " + nn.getNumberOfClusters());
+        System.out.println(nn.getClusters());
+
 
     }
 

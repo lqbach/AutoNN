@@ -2,6 +2,7 @@ package network3;
 
 import matrix.Matrix;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -24,7 +25,7 @@ public class Network {
     private int numOutputNeurons = 0;
 
 
-    private double threshhold;
+    private double threshold;
 
     /**
      * network.network constructor, creates weights and biases based on number of neurons given as parameters
@@ -33,9 +34,9 @@ public class Network {
      * @return returns a network.network object
      */
 
-    public Network(int numInputNeurons, double threshhold){
+    public Network(int numInputNeurons, double threshold){
         this.numInputNeurons = numInputNeurons;
-        this.threshhold = threshhold;
+        this.threshold = threshold;
     }
 
     //Getter functions
@@ -108,20 +109,21 @@ public class Network {
     //TODO: probably very long, but convert matrix package to work with arraylists for better optimization
     public void trainNewData(){
         if(weightsHidden == null){
-            weightsHidden = new double[1][numInputNeurons];
-            biasesHidden = new double [1][1];
+            weightsHidden = Matrix.random(1, numInputNeurons);
+            biasesHidden = Matrix.random(1,1);
         }
         else {
             weightsHidden = Matrix.addRandomRow(weightsHidden);
             biasesHidden = Matrix.addRandomRow(biasesHidden);
-            numOutputNeurons ++;
         }
+        numOutputNeurons ++;
     }
 
     //deletes a row
     public void deleteOutput(int n){
         weightsHidden = Matrix.deleteRow(weightsHidden, n);
         biasesHidden = Matrix.deleteRow(biasesHidden, n);
+        numOutputNeurons --;
     }
 
 
@@ -139,20 +141,59 @@ public class Network {
         int numScores = 0;
 
         for(int i = 0; i < scores.length; i ++){
-            if(scores[i][1] > .90){
+            if(scores[i][0] > threshold){
                 numScores ++;
             }
         }
 
         int [] neuronScores = new int[numScores];
+        int count = 0;
         for(int i = 0; i < scores.length; i ++){
-            if(scores[i][1] > threshhold){
-                neuronScores[numScores] = i;
-                numScores --;
+            if(scores[i][0] > threshold){
+                neuronScores[count] = i;
+                count ++;
             }
         }
         return neuronScores;
     }
+
+
+//    public int[] getHighScores(double [][] input){
+//
+//        if(numOutputNeurons == 0){
+//            return null;
+//        }
+//        double [][] scores = feedForward(input);
+//        double highScore = 0;
+//
+//        for(int i = 0; i < scores.length; i ++){
+//            if(scores[i][1] > highScore){
+//                highScore =scores[i][1];
+//            }
+//        }
+//
+//        if(highScore < threshold){
+//            return null;
+//        }
+//
+//        int numScores = 0;
+//        for(int i = 0; i < scores.length; i ++){
+//            if(scores[i][1] > highScore - .1){
+//                numScores ++;
+//            }
+//        }
+//
+//        int [] scorePlace = new int[numScores];
+//        int count = 0;
+//        for(int i = 0; i < scores.length; i ++){
+//            if(scores[i][1] > highScore - .1){
+//                scorePlace[count] = i;
+//                count ++;
+//            }
+//        }
+//
+//        return scorePlace;
+//    }
 
 
 
