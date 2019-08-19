@@ -15,7 +15,7 @@ public class Experiment {
      */
     public static void main(String args []){
 
-        SLNN nn = new SLNN(3, .50, .2);
+        SLNN nn = new SLNN(3, .50, .1);
 
         double [][] inputMatrix =  {
                 {0.305, 0.247, 0.894},      //blue
@@ -39,16 +39,23 @@ public class Experiment {
         };
 
         for(int i = 0; i < inputMatrix.length; i ++){
+            if(nn.getNumberOfPoints() != i){
+                System.out.println("program ended forced");
+                return;
+            }
             //System.out.println("At row : " + i);
             System.out.println("Testing: " + Matrix.print(Matrix.getRow(inputMatrix, i)));
             nn.learn(Matrix.convertTo1D(Matrix.getRow(inputMatrix, i)));
 
             //System.out.println(nn.printWeights());
             System.out.println("Network currently has " + nn.getNumberOfClusters() + " clusters");
+
             System.out.println("-----------");
         }
 
         System.out.println("Number of clusters: " + nn.getNumberOfClusters());
+        System.out.println("Number of points from program: " + nn.getNumberOfPoints());
+        System.out.println("Number of actual points: " + inputMatrix.length);
         System.out.println(nn.getClusters());
 
 

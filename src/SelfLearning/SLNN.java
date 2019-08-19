@@ -33,7 +33,6 @@ public class SLNN {
     //helper methods
     private void learnCluster(Cluster cluster, int id){
         for(Point point : cluster.getPoints()){
-            //TODO: test to make sure this works
             //System.out.println(Arrays.deepToString(Matrix.convertTo2D(point.getCoordinates())));
             nn.backprop(Matrix.transpose(Matrix.convertTo2D(point.getCoordinates())), Matrix.getColumn(output, id));
         }
@@ -96,7 +95,6 @@ public class SLNN {
      *    If a new cluster is created, the output must be changed to accomadate this,
      *    and relearning must occur.
      *    Keep track of radius! We will test two scenarios:
-     *    TODO: Figure out whether max radius is better than average radius
      */
 
     public void learn(double [] input){

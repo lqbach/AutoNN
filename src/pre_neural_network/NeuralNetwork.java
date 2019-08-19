@@ -11,7 +11,6 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 public class NeuralNetwork {
-    //TODO: remove 'static'
     private static double [][] hiddenMatrix;
 //    private double [] inputLayer;
 //    private double [] expectedOutputLayer;
@@ -38,7 +37,6 @@ public class NeuralNetwork {
         backprop(input, diffError);
     }
 
-    //TODO: remove 'static'
     private static void backprop(double [] input, double [] diffError){
         double [] contribution = new double [input.length];
         for(int i = 0; i < hiddenMatrix[0].length; i ++){ //loop through all columns in hidden matrix
@@ -56,7 +54,6 @@ public class NeuralNetwork {
         }
     }
 
-    //TODO: remove 'static'
     private static double [] calcDiffError(double [] input, double [] expectedOutput){
         double [] calculatedOutput = new double[expectedOutput.length];
         for(int i = 0; i < hiddenMatrix[0].length; i ++){

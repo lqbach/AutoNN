@@ -51,7 +51,6 @@ public class Cluster {
         }
         points.add(point);
 
-        //TODO: make calculateCentroid() O(1) time instead of O(n)
         calculateCentroid();
         calculateMaxRadius();
     }

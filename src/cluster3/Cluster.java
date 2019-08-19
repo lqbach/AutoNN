@@ -1,4 +1,4 @@
-package cluster2;
+package cluster3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,18 +8,14 @@ import java.util.Arrays;
  */
 public class Cluster {
 
-    //TODO: delete this test code
-    //private ArrayList<double[]> points = new ArrayList<double[]>();
-
-
+    private ArrayList<double[]> points = new ArrayList<double[]>();
     private int numPoints;
     private int dimension;
     private double[] centroid;
     private double radius;
 
     public Cluster(double [] point, double radius){
-        //TODO: delete this test code
-        //points.add(point);
+        points.add(point);
 
         this.numPoints = 1;
         this.centroid   = point;
@@ -105,8 +101,7 @@ public class Cluster {
         double distance = this.calculateDistance(cluster);
 
         if(cluster.radius > distance || this.radius > distance){
-            //TODO: delete this test code
-            //points.addAll(cluster.points);
+            points.addAll(cluster.points);
 
             double [] centroidSum = new double[cluster.dimension];
             int totalPoints = this.numPoints + cluster.numPoints;
@@ -117,11 +112,15 @@ public class Cluster {
                 //System.out.println("During merge: " + centroidSum[i]);
             }
 
-            //TODO: check this and evaluate!
-            double centroidToClusterOne = this.calculateDistance(centroidSum) + this.radius;
-            double centroidToClusterTwo = cluster.calculateDistance(centroidSum) + cluster.radius;
+            double [] furthestPoint = points.get(0);
+            for(double [] point: points){
+                if(this.calculateDistance(point) > this.calculateDistance(furthestPoint)){
+                    furthestPoint = point;
+                }
+            }
 
-            this.radius = (centroidToClusterOne > centroidToClusterTwo) ? centroidToClusterOne : centroidToClusterTwo;
+            double furthestDistance = this.calculateDistance(furthestPoint);
+            this.radius = (this.radius > furthestDistance) ? this.radius : furthestDistance;
 
 
             //update numPoints
@@ -138,7 +137,6 @@ public class Cluster {
     public String toString(){
         return "Centroid: " + Arrays.toString(centroid) + "\nRadius: " + radius;
     }
-
 
     public int getNumPoints(){
         return numPoints;

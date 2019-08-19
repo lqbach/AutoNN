@@ -1,7 +1,7 @@
 package SelfLearning2;
 
 import network3.Network;
-import cluster2.Cluster;
+import cluster3.Cluster;
 
 import matrix.Matrix;
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class SLNN {
             int counter = 0;
             while(itr.hasNext()){
                 Cluster cluster = (Cluster)itr.next();
-                if(cluster != candidate && input.merge(cluster)){
+                if(cluster != candidate && candidate.merge(cluster)){
                     //remove the cluster and delete its corresponding row from the matrix
                     itr.remove();
                     nn.deleteOutput(counter);
@@ -77,9 +77,41 @@ public class SLNN {
         nn.backpropagate(Matrix.transpose(Matrix.convertTo2D(cluster.getCentroid())), Matrix.getColumn(output, id));
     }
 
-//    private boolean checkScore(int clusterId, double upperBound, double lowerBound){
-//
-//    }
+    private boolean checkScore(Cluster cluster, int clusterId, double upperBound, double lowerBound){
+        double [][] score = nn.feedForward(Matrix.transpose(Matrix.convertTo2D(cluster.getCentroid())));
+//        System.out.println(Matrix.print(score));
+        for(int i = 0; i < score.length; i++){
+            if(i == clusterId){
+                if(score[i][0] < upperBound){
+                    return false;
+                }
+            }
+            else{
+                if(score[i][0] > lowerBound){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean checkScore(Cluster cluster, int clusterId, double bound){
+        double [][] score = nn.feedForward(Matrix.transpose(Matrix.convertTo2D(cluster.getCentroid())));
+//        System.out.println(Matrix.print(score));
+        for(int i = 0; i < score.length; i++){
+            if(i == clusterId){
+                if(score[i][0] < bound){
+                    return false;
+                }
+            }
+            else{
+                if(score[i][0] > bound){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public double calculateAverageScore(Cluster cluster, int id){
         double [][] score = nn.feedForward(Matrix.transpose(Matrix.convertTo2D(cluster.getCentroid())));
@@ -101,25 +133,61 @@ public class SLNN {
 
     private void autoTrain(){
         output = Matrix.identityMatrix(groups.size());
+        int timesTrained = 0;
         int succ = 0;
         while(true){
             int id = 0;
+
             for(Cluster cluster : groups){
-                learnCluster(cluster, id);
-                double score = calculateAverageScore(cluster, id);
-                //System.out.println(score);
-                if(score > .95){
-                    succ ++;
+                int numPoints = cluster.getNumPoints();
+                if(numPoints < 5){
+                    if(checkScore(cluster, id, .60)){
+                        succ ++;
+                    }
+                    else{
+                        learnCluster(cluster, id);
+                        succ = 0;
+                    }
                 }
+
+                else if(numPoints < 15){
+                    if(checkScore(cluster, id, .70)){
+                        succ ++;
+                    }
+                    else{
+                        learnCluster(cluster, id);
+                        succ = 0;
+                    }
+                }
+
+                else if(numPoints < 20){
+                    if(checkScore(cluster, id, .85)){
+                        succ ++;
+                    }
+                    else{
+                        learnCluster(cluster, id);
+                        succ = 0;
+                    }
+                }
+
                 else{
-                    succ = 0;
+                    if(checkScore(cluster, id, .90)){
+                        succ ++;
+                    }
+                    else{
+                        learnCluster(cluster, id);
+                        succ = 0;
+                    }
                 }
+
                 id ++;
             }
-            if(succ == groups.size()){
+            timesTrained ++;
+            if(succ >= groups.size()){
                 break;
             }
         }
+        System.out.println("Trained " + timesTrained + " times");
     }
 
     /**
@@ -142,6 +210,7 @@ public class SLNN {
             for(int score : scores){
                 if(mergeCluster(clusterInput,score-shift)){
                     shift ++;
+                    autoTrain();
                     return;
                 }
             }
@@ -149,9 +218,9 @@ public class SLNN {
         groups.add(clusterInput);
         nn.trainNewData();
         //output = Matrix.identityMatrix(groups.size());
-        //autoTrain();
+        autoTrain();
 
-        train(1000);
+//        train(1000);
     }
 
     public double [][] feedForward(double [] input){
@@ -181,6 +250,14 @@ public class SLNN {
             message += "\n";
         }
         return message;
+    }
+
+    public int getNumberOfPoints(){
+        int numPoints = 0;
+        for(Cluster c : groups){
+            numPoints += c.getNumPoints();
+        }
+        return numPoints;
     }
 
 
