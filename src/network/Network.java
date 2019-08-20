@@ -33,27 +33,6 @@ public class Network {
         weightsOuter = Matrix.random(numOutputNeurons, numHiddenNeurons);
         biasesHidden = Matrix.random(numHiddenNeurons, 1);
         biasesOuter = Matrix.random(numOutputNeurons, 1);
-        //test matrices
-//        weightsHidden = new double[][]{
-//                        {-.093357, .9387},
-//                        {.412868, .40232},
-//                        {.53912, -.913665}
-//                        };
-//        weightsOuter = new double[][]{
-//                        {.973, -.1299, .756709},
-//                        {-.1525, .951796, -.5670148},
-//                        };
-//        biasesHidden = new double[][]{
-//                        {-.3407},
-//                        {-.2197},
-//                        {.9363}
-//                        };
-//
-//        biasesOuter = new double[][]{
-//                        {-.3461},
-//                        {.87125}
-//                        };
-
     }
 
     //Getter functions
@@ -121,6 +100,10 @@ public class Network {
         biasesHidden = Matrix.subtract(biasesHidden, Matrix.multiply(ETA, sigH));
 
     }
+
+//    public void trainNewData(){
+//
+//    }
 
 
 }
