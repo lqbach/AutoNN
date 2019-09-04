@@ -2,6 +2,9 @@ package network4;
 
 import matrix.Matrix;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 /**
  * A 3-layer neural network
@@ -20,6 +23,12 @@ public class Network {
     private double [][] biasesHidden;
     private double [][] biasesOuter;
 
+    private int numInputNeurons;
+    private int numHiddenNeurons;
+    private int numOutputNeurons = 0;
+
+    private double threshold;
+
     /**
      * network.network constructor, creates weights and biases based on number of neurons given as parameters
      *
@@ -31,9 +40,18 @@ public class Network {
 
     public Network(int numInputNeurons, int numHiddenNeurons, int numOutputNeurons){
         weightsHidden = Matrix.random(numHiddenNeurons, numInputNeurons);
-        weightsOuter = Matrix.random(numOutputNeurons, numHiddenNeurons);
         biasesHidden = Matrix.random(numHiddenNeurons, 1);
+
+        weightsOuter = Matrix.random(numOutputNeurons, numHiddenNeurons);
         biasesOuter = Matrix.random(numOutputNeurons, 1);
+    }
+
+    public Network(int numInputNeurons, int numHiddenNeurons, double threshold){
+        weightsHidden = Matrix.random(numHiddenNeurons, numInputNeurons);
+        biasesHidden = Matrix.random(numHiddenNeurons, 1);
+        this.numInputNeurons = numInputNeurons;
+        this.numHiddenNeurons = numHiddenNeurons;
+        this.threshold = threshold;
     }
 
     //Getter functions
@@ -102,9 +120,57 @@ public class Network {
 
     }
 
-//    public void trainNewData(){
-//
-//    }
+    /**
+     * Adds a new row to the matrix between outer and hidden layer for weights and biases
+     * TODO: convert the double arrays to arraylists instead for constant time add in addRandomRow
+     */
+    public void trainNewData(){
+        if(weightsOuter == null){
+            weightsOuter = Matrix.random(1, numHiddenNeurons);
+            biasesOuter = Matrix.random(1,1);
+        }
+        else {
+            weightsOuter = Matrix.addRandomRow(weightsOuter);
+            biasesOuter = Matrix.addRandomRow(biasesOuter);
+        }
+        numOutputNeurons ++;
+    }
+
+    public void deleteOutput(int n){
+        weightsOuter = Matrix.deleteRow(weightsOuter, n);
+        biasesOuter = Matrix.deleteRow(biasesOuter, n);
+        numOutputNeurons --;
+    }
+
+    /**
+     *
+     * @param input an input that matches the dimension
+     * @return an array of where the output cells yield an answer of .90 or higher, making the point a potential
+     * candidate
+     */
+    public int[] getOutputNeuronScores(double [][] input){
+        if(numOutputNeurons == 0){
+            return null;
+        }
+        double [][] scores = feedforward(input);
+        int numScores = 0;
+
+        ArrayList<Integer> listScores = new ArrayList<>();
+
+        for(int i = 0; i < scores.length; i ++){
+            if(scores[i][0] > threshold){
+                listScores.add(i);
+            }
+        }
+
+        int [] neuronScores = new int [listScores.size()];
+
+        for(int i = 0; i < neuronScores.length; i ++){
+            neuronScores[i] = listScores.get(i);
+        }
+
+        return neuronScores;
+    }
 
 
 }

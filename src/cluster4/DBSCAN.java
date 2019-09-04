@@ -44,6 +44,10 @@ public class DBSCAN {
         if(radius < 0 || minPoints < 0){
             throw new RuntimeException("Radius or number of points are not positive");
         }
+
+        groups = new ArrayList<>();
+        outliers = new ArrayList<>();
+
         this.radius = radius;
         this.minPoints = minPoints;
     }
@@ -92,25 +96,38 @@ public class DBSCAN {
      * this means the network is too immature and there is underfitting.
      *
      * @param candidate the input that scored a high score and should be tested in the cluster
-     * @param clusterID the cluster where the candidate could be put into
+     * @param clusterIDs the cluster where the candidate could be put into. Cluster ID should be negative if network is not available yet to feedforward.
      * @return an int array containing the clusters were merged from the groups
+     *          - returns an array of positive numbers for each cluster deleted
+     *          - returns a negative singleton if new data must be trained
+     *          - returns nothing if clusters remained untouched
      */
-    public int[] addToCluster(double [] candidate, int clusterID){
-        if(clusterID >= groups.size()){
-            throw new RuntimeException("ID is greater than the number of groups");
-        }
-        for(double [] point : groups.get(clusterID).getPoints()){
+    public int[] addToCluster(double [] candidate, int [] clusterIDs){
+        //TODO: add a negative comparator
+//        if(groups.size() != 0 && clusterID >= groups.size()){
+//            throw new RuntimeException("ID is greater than the number of groups");
+//        }
 
-            //join point into cluster
-            if(calcDistance(point, candidate) <= this.radius){
-                Cluster currentCluster = groups.get(clusterID);
-                currentCluster.addPoint(candidate);
+        if(clusterIDs != null){
+            for(int clusterID : clusterIDs){
+                if(clusterID >= 0){
+                    for(double [] point : groups.get(clusterID).getPoints()){
 
-                mergeNeighboringOutliers(candidate, currentCluster);
-                return mergeNeighboringClusters(candidate, currentCluster);
+                        //join point into cluster
+                        if(calcDistance(point, candidate) <= this.radius){
+                            Cluster currentCluster = groups.get(clusterID);
+                            currentCluster.addPoint(candidate);
 
+                            mergeNeighboringOutliers(candidate, currentCluster);
+                            return mergeNeighboringClusters(candidate, currentCluster);
+
+                        }
+                    }
+                }
             }
         }
+
+
         if(addToOutliers(candidate)){
             return new int [] {-1};
         }

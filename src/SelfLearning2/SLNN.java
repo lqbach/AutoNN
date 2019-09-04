@@ -1,7 +1,7 @@
 package SelfLearning2;
 
 import network3.Network;
-import cluster3.Cluster;
+import cluster2.Cluster;
 
 import matrix.Matrix;
 import java.util.ArrayList;
@@ -210,7 +210,8 @@ public class SLNN {
             for(int score : scores){
                 if(mergeCluster(clusterInput,score-shift)){
                     shift ++;
-                    autoTrain();
+                    //autoTrain();
+                    train(1000);
                     return;
                 }
             }
@@ -218,9 +219,9 @@ public class SLNN {
         groups.add(clusterInput);
         nn.trainNewData();
         //output = Matrix.identityMatrix(groups.size());
-        autoTrain();
+        //autoTrain();
 
-//        train(1000);
+        train(1000);
     }
 
     public double [][] feedForward(double [] input){

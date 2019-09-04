@@ -1,3 +1,5 @@
+package SL2Experiments;
+
 import SelfLearning2.SLNN;
 
 import matrix.Matrix;
@@ -8,14 +10,14 @@ public class Experiment {
 
     /**
      *
-     * Experiment 1:
+     * SL2Experiments.Experiment 1:
      *  In this experiment, we will test a bunch of RGB inputs
      *
      *
      */
     public static void main(String args []){
 
-        SLNN nn = new SLNN(3, .50, .1);
+        SLNN nn = new SLNN(3, .50, .2);
 
         double [][] inputMatrix =  {
                 {0.305, 0.247, 0.894},      //blue
@@ -54,8 +56,8 @@ public class Experiment {
         }
 
         System.out.println("Number of clusters: " + nn.getNumberOfClusters());
-        System.out.println("Number of points from program: " + nn.getNumberOfPoints());
-        System.out.println("Number of actual points: " + inputMatrix.length);
+//        System.out.println("Number of points from program: " + nn.getNumberOfPoints());
+//        System.out.println("Number of actual points: " + inputMatrix.length);
         System.out.println(nn.getClusters());
 
 
